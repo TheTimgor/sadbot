@@ -11,19 +11,27 @@ images = [f for f in listdir('images') if isfile(join('images', f))]
 
 client = discord.Client()
 
+loop = asyncio.get_event_loop()
+
 async def timed_message():
     #await client.wait_until_ready()
-    await asyncio.sleep(3)
     print("sad debug statement")
     channel = client.get_channel(443094449233592327)
     print(client.is_closed())
-    #await asyncio.sleep(3)
+    await asyncio.sleep(1)
     while not client.is_closed():
         if time.strftime("%H %M %S") == '02 00 00':
             await channel.send('@here https://imgur.com/gallery/emKQiF4')
         await asyncio.sleep(1)
 
     print("it does not work and I am sad")
+
+async def send_reminder(reminder, remindtime, channel):
+    while int(time.time()) != int(remindtime):
+        print(remindtime)
+        print(time.time())
+        await asyncio.sleep(1)
+    await channel.send(reminder)
 
 @client.event
 async def on_message(message):
@@ -45,11 +53,10 @@ async def on_message(message):
             print(rawtime)
             print(sectime)
             await message.channel.send("fine, I'll remind you '%s' in %s , you forgetfull shit" % (reminder, rawtime))
-            while int(time.time()) != int(remindtime):
-                print(remindtime)
-                print(time.time())
-                await asyncio.sleep(1)
-            await message.channel.send(reminder)
+            with open('reminders.txt', 'a+') as reminders:
+                reminders.write(";%s,%s,%s" % (reminder, remindtime, message.channel.id))
+            task = loop.create_task(send_reminder(reminder, remindtime, message.channel))
+            loop.run_until_complete(task)
 
         if message.content == 's!test':
             await message.channel.send('kill me now')
@@ -79,6 +86,20 @@ async def on_ready():
     print(images)
     await client.get_channel(454457353463529482).send("bot nominal. why must you bring me into this cruel world?")
 
+    with open('reminders.txt', 'r') as reminders:
+        reminders_list = reminders.read().split(';')
+
+    reminders_list.pop(0)
+    print(reminders_list)
+
+    for s in reminders_list:
+        if s != '':
+            print(s)
+            m,s,c = s.split(",")
+            loop.create_task(send_reminder(m,float(s),client.get_channel(int(c))))
+
+    with open('reminders.txt', 'w') as reminders:
+                reminders.write('')
 
 print("debug 1")
 client.loop.create_task(timed_message())
