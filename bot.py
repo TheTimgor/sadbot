@@ -15,21 +15,21 @@ loop = asyncio.get_event_loop()
 
 async def timed_message():
     #await client.wait_until_ready()
+    await asyncio.sleep(1)
     print("sad debug statement")
     channel = client.get_channel(443094449233592327)
     print(client.is_closed())
-    await asyncio.sleep(1)
     while not client.is_closed():
-        if time.strftime("%H %M %S") == '02 00 00':
-            await channel.send('@here https://imgur.com/gallery/emKQiF4')
+        if time.strftime("%H %M %S") == '2 00 00':
+            await channel.send('@here who up https://i.imgur.com/7CWoBT7.jpg')
         await asyncio.sleep(1)
 
     print("it does not work and I am sad")
 
 async def send_reminder(reminder, remindtime, channel):
     while int(time.time()) != int(remindtime):
-        print(remindtime)
-        print(time.time())
+        #print(remindtime)
+        #print(time.time())
         await asyncio.sleep(1)
     await channel.send(reminder)
 
@@ -37,7 +37,7 @@ async def send_reminder(reminder, remindtime, channel):
 async def on_message(message):
     if not message.author.bot: #man's not bot
         if message.content == 's!role':
-            if time.strftime("%H") > "02" and time.strftime("%H") < "05":
+            if time.strftime("%H") >= "02" and time.strftime("%H") < "05":
                 await message.channel.send("fine, here's your fucking role")
                 sad_role = channel = discord.utils.get(message.guild.roles, name='sad niggas')
                 await message.author.add_roles(sad_role)
@@ -70,7 +70,7 @@ async def on_message(message):
             await message.channel.send(''' I'm the one that fucking needs help here
 
 `s!test` just verifies that I'm working properly
-`s!role` crowns you a bona fide sad nigga
+`s!role` crowns you a bona fide sad nigga (only works during offical sad nigga hours (US eastern time zone))
 `s!remind H:MM:SS reminder` sends _reminder_ with the specified delay
 `s!sad` posts a random sad image 
 `s!help` does . . . you fucking know what it does
@@ -98,8 +98,6 @@ async def on_ready():
             m,s,c = s.split(",")
             loop.create_task(send_reminder(m,float(s),client.get_channel(int(c))))
 
-    with open('reminders.txt', 'w') as reminders:
-                reminders.write('')
 
 print("debug 1")
 client.loop.create_task(timed_message())
