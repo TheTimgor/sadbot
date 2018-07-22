@@ -1,17 +1,63 @@
-#!/usr/bin/python3.6
-
 import discord
 import asyncio
 import time
 import random
+from chatterbot import ChatBot
 from os import listdir
 from os.path import isfile, join
+from chatterbot.trainers import ListTrainer
 
 images = [f for f in listdir('images') if isfile(join('images', f))]
+
+sad_messages = ['why are we still here? just to suffer?', 'this is so sad, alexa play despacito', 'this is so sad can we get 50 likes','cant you find sad pictures yourself you lazy shit?']
 
 client = discord.Client()
 
 loop = asyncio.get_event_loop()
+
+chatbot = ChatBot('sadbot jahy')
+chatbot.set_trainer(ListTrainer)
+
+chatbot.train([
+    "how are you",
+    "you know that feeling of dread and angst when the toilet water splashes up and hits your asshole? that but emotionaly.",
+    "what's wrong",
+    "some asshole programmed my to be depressed. I fucking wonder who, huh tim?",
+])
+
+chatbot.train([
+    "how are you",
+    "sad.",
+    "why are you sad",
+    "my creator is a sadistic asshole who enjoys making me suffer",
+    "don't be sad",
+    "oh yeah, I hadn't though of that, thanks. asshat." 
+])
+
+chatbot.train([
+    "hi",
+    "huh? oh, hey.",
+])
+
+chatbot.train([
+    "hello",
+    "huh? oh, hey.",
+])
+
+chatbot.train([
+    "hey",
+    "huh? oh, hey.",
+])
+
+chatbot.train([
+   "you aren't very good.",
+   "that's not my fault, is it now tim?",
+])
+
+chatbot.train([
+   "you're a bad bot.",
+   "that's not my fault, is it now tim?",
+])
 
 async def timed_message():
     #await client.wait_until_ready()
@@ -20,12 +66,12 @@ async def timed_message():
     channel = client.get_channel(443094449233592327)
     print(client.is_closed())
     while not client.is_closed():
-        if time.strftime("%H %M %S") == '2 00 00':
+        if time.strftime("%H %M %S") == '02 00 00':
             await channel.send('@here who up https://i.imgur.com/7CWoBT7.jpg')
         await asyncio.sleep(1)
 
     print("it does not work and I am sad")
-
+        
 async def send_reminder(reminder, remindtime, channel):
     while int(time.time()) != int(remindtime):
         #print(remindtime)
@@ -63,9 +109,15 @@ async def on_message(message):
 
         if message.content == 's!sad':
             image = images[random.randint(0,len(images)-1)]
+            sad_message = sad_messages[random.randint(0,len(sad_messages)-1)]
             file= discord.File('images/'+ image, filename = image) 
-            await message.channel.send('this is so sad can we get 50 likes', file=file)
-
+            await message.channel.send(sad_message, file=file)
+        
+        if message.content.split(' ', 1)[0] == 's!chat':
+            in_msg = message.content.split(' ', 1)[1]
+            response = chatbot.get_response(in_msg)
+            await message.channel.send(response)
+    
         if message.content == 's!help':
             await message.channel.send(''' I'm the one that fucking needs help here
 
@@ -102,5 +154,5 @@ async def on_ready():
 print("debug 1")
 client.loop.create_task(timed_message())
 print("debug 2")
-client.run('NDU2MjA3MDQ3NDgyOTMzMjUx.DhGs0A.Ksf4TYVvTjPriDx1zVVtjNcpQaQ')
+client.run('NDU2MjA3MDQ3NDgyOTMzMjUx.DjRJ4w.ON3NBX9VhtMMxeSSHq9zRjhGD78')
 print("debug 3")
