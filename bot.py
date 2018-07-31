@@ -7,6 +7,8 @@ from os import listdir
 from os.path import isfile, join
 from chatterbot.trainers import ListTrainer
 
+startup = True
+
 images = [f for f in listdir('images') if isfile(join('images', f))]
 
 sad_messages = ['why are we still here? just to suffer?', 'this is so sad, alexa play despacito', 'this is so sad can we get 50 likes','cant you find sad pictures yourself you lazy shit?']
@@ -89,7 +91,12 @@ async def on_message(message):
                 await message.author.add_roles(sad_role)
             else:
                 await message.channel.send("it isn't real sad nigga hours, you fucking poser")
-
+        if message.content == 's!roledebug':            
+            await message.channel.send("fine, here's your fucking role")
+            test_role = channel = discord.utils.get(message.guild.roles, name='test')
+            await message.author.add_roles(test_role)
+                                                                      
+                                                                                                            
         if message.content.split(' ', 2)[0] == 's!remind':
             rawtime = message.content.split(' ', 2)[1]
             h, m, s = rawtime.split(':')
@@ -127,29 +134,47 @@ async def on_message(message):
 `s!sad` posts a random sad image 
 `s!help` does . . . you fucking know what it does
             ''')
-   
+        chan = message.channel
+        hist_itr = chan.history(limit = 5)
+        hist = []
+        async for m in hist_itr:
+            hist.insert(0,m.content)
+        chatbot.train(hist)
+
+        
+       
 
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')
-    print(images)
-    await client.get_channel(454457353463529482).send("bot nominal. why must you bring me into this cruel world?")
+    global startup
+    if(startup):
+        print('Logged in as')
+        print(client.user.name) 
+        print(client.user.id)
+        print('------')
+        print(images)
+        chan = client.get_channel(443094449233592327)
+        hist_itr = chan.history(limit = 100)
+        hist = []
+        async for m in hist_itr:
+            hist.insert(0,m.content)
+        print(hist)
+        chatbot.train(hist)
+    
+        await client.get_channel(454457353463529482).send("bot nominal. why must you bring me into this cruel world?")
 
-    with open('reminders.txt', 'r') as reminders:
-        reminders_list = reminders.read().split(';')
+        with open('reminders.txt', 'r') as reminders:
+            reminders_list = reminders.read().split(';')
 
-    reminders_list.pop(0)
-    print(reminders_list)
+        reminders_list.pop(0)
+        print(reminders_list)
 
-    for s in reminders_list:
-        if s != '':
-            print(s)
-            m,s,c = s.split(",")
-            loop.create_task(send_reminder(m,float(s),client.get_channel(int(c))))
-
+        for s in reminders_list:
+            if s != '':
+                print(s)
+                m,s,c = s.split(",")
+                loop.create_task(send_reminder(m,float(s),client.get_channel(int(c))))
+    startup = False
 
 print("debug 1")
 client.loop.create_task(timed_message())
