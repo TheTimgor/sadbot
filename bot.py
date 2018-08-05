@@ -1,3 +1,5 @@
+#! /usr/bin/python3.6
+
 import discord
 import asyncio
 import time
@@ -8,6 +10,13 @@ from os.path import isfile, join
 from chatterbot.trainers import ListTrainer
 
 startup = True
+
+with open('token.txt', 'r') as t:
+    global token 
+    token = t.read().splitlines()[0]
+
+
+print(token)
 
 images = [f for f in listdir('images') if isfile(join('images', f))]
 
@@ -179,5 +188,5 @@ async def on_ready():
 print("debug 1")
 client.loop.create_task(timed_message())
 print("debug 2")
-client.run('NDU2MjA3MDQ3NDgyOTMzMjUx.DjRJ4w.ON3NBX9VhtMMxeSSHq9zRjhGD78')
+client.run(token)
 print("debug 3")
