@@ -74,7 +74,7 @@ async def timed_message():
     #await client.wait_until_ready()
     await asyncio.sleep(1)
     print("sad debug statement")
-    channel = client.get_channel(443094449233592327)
+    channel = client.get_channel(476411889509990402)
     print(client.is_closed())
     while not client.is_closed():
         if time.strftime("%H %M %S") == '02 00 00':
@@ -162,7 +162,7 @@ async def on_ready():
         print(client.user.id)
         print('------')
         print(images)
-        chan = client.get_channel(443094449233592327)
+        chan = client.get_channel(476411889509990402)
         hist_itr = chan.history(limit = 100)
         hist = []
         async for m in hist_itr:
@@ -170,7 +170,7 @@ async def on_ready():
         print(hist)
         chatbot.train(hist)
     
-        await client.get_channel(454457353463529482).send("bot nominal. why must you bring me into this cruel world?")
+        await client.get_channel(476411889509990402).send("bot nominal. why must you bring me into this cruel world?")
 
         with open('reminders.txt', 'r') as reminders:
             reminders_list = reminders.read().split(';')
