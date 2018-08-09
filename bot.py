@@ -93,20 +93,23 @@ async def send_reminder(reminder, remindtime, channel):
 @client.event
 async def on_message(message):
     if not message.author.bot: #man's not bot
-        if message.content == 's!role':
+
+
+        if message.content == 's#role':
             if time.strftime("%H") >= "02" and time.strftime("%H") < "05":
                 await message.channel.send("fine, here's your fucking role")
                 sad_role = channel = discord.utils.get(message.guild.roles, name='sad niggas')
                 await message.author.add_roles(sad_role)
             else:
                 await message.channel.send("it isn't real sad nigga hours, you fucking poser")
-        if message.content == 's!roledebug':            
+
+        if message.content == 's#roledebug':            
             await message.channel.send("fine, here's your fucking role")
             test_role = channel = discord.utils.get(message.guild.roles, name='test')
             await message.author.add_roles(test_role)
                                                                       
                                                                                                             
-        if message.content.split(' ', 2)[0] == 's!remind':
+        if message.content.split(' ', 2)[0] == 's#remind':
             rawtime = message.content.split(' ', 2)[1]
             h, m, s = rawtime.split(':')
             sectime = float(h)*3600 + float(m)*60 + float(s)
@@ -120,10 +123,10 @@ async def on_message(message):
             task = loop.create_task(send_reminder(reminder, remindtime, message.channel))
             loop.run_until_complete(task)
 
-        if message.content == 's!test':
+        if message.content == 's#test':
             await message.channel.send('kill me now')
 
-        if message.content == 's!sad':
+        if message.content == 's#sad':
             image = images[random.randint(0,len(images)-1)]
             sad_message = sad_messages[random.randint(0,len(sad_messages)-1)]
             file= discord.File('images/'+ image, filename = image) 
@@ -134,14 +137,15 @@ async def on_message(message):
             response = chatbot.get_response(in_msg)
             await message.channel.send(response)
     
-        if message.content == 's!help':
+        if message.content == 's#help':
             await message.channel.send(''' I'm the one that fucking needs help here
 
-`s!test` just verifies that I'm working properly
-`s!role` crowns you a bona fide sad nigga (only works during offical sad nigga hours (US eastern time zone))
-`s!remind H:MM:SS reminder` sends _reminder_ with the specified delay
-`s!sad` posts a random sad image 
-`s!help` does . . . you fucking know what it does
+`s#test` just verifies that I'm working properly
+`s#role` crowns you a bona fide sad nigga (only works during offical sad nigga hours (US eastern time zone))
+`s#remind H:MM:SS reminder` sends _reminder_ with the specified delay
+`s#sad` posts a random sad image 
+`s#chat message` will reply to message with an automated chatbot. it isn't very good yet
+`s#help` does . . . you fucking know what it does
             ''')
         chan = message.channel
         hist_itr = chan.history(limit = 5)
