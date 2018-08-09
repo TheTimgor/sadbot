@@ -4,10 +4,12 @@ import discord
 import asyncio
 import time
 import random
+import subprocess
 from chatterbot import ChatBot
 from os import listdir
 from os.path import isfile, join
 from chatterbot.trainers import ListTrainer
+
 
 startup = True
 
@@ -92,53 +94,55 @@ async def send_reminder(reminder, remindtime, channel):
 
 @client.event
 async def on_message(message):
-    if not message.author.bot and message.content.startswith('s#'): #man's not bot
-        command = message.content[2:].split(' ', 1)[0]
-        args = message.content[2:].split(' ', 1)[1]
+    if not message.author.bot: 
+        if message.content.startswith('s#'): #man's not bot
+            command = message.content[2:].split(' ', 1)[0]
+            if len(message.content[2:].split(' ', 1)) >=2:
+                args = message.content[2:].split(' ', 1)[1]
 
-        if command == 'role':
-            if time.strftime("%H") >= "02" and time.strftime("%H") < "05":
+            if command == 'role':
+                if time.strftime("%H") >= "02" and time.strftime("%H") < "05":
+                    await message.channel.send("fine, here's your fucking role")
+                    sad_role = channel = discord.utils.get(message.guild.roles, name='sad niggas')
+                    await message.author.add_roles(sad_role)
+                else:
+                    await message.channel.send("it isn't real sad nigga hours, you fucking poser")
+
+            if command == 'roledebug':            
                 await message.channel.send("fine, here's your fucking role")
-                sad_role = channel = discord.utils.get(message.guild.roles, name='sad niggas')
-                await message.author.add_roles(sad_role)
-            else:
-                await message.channel.send("it isn't real sad nigga hours, you fucking poser")
+                test_role = channel = discord.utils.get(message.guild.roles, name='test')
+                await message.author.add_roles(test_role)
+                                                                          
+                                                                                                                
+            if command == 'remind':
+                rawtime = args.split(' ', 1)[0]
+                h, m, s = rawtime.split(':')
+                sectime = float(h)*3600 + float(m)*60 + float(s)
+                remindtime = time.time() + float(sectime)
+                reminder = args.split(' ', 1)[1]
+                print(rawtime)
+                print(sectime)
+                await message.channel.send("fine, I'll remind you '%s' in %s , you forgetfull shit" % (reminder, rawtime))
+                with open('reminders.txt', 'a+') as reminders:
+                    reminders.write(";%s,%s,%s" % (reminder, remindtime, message.channel.id))
+                task = loop.create_task(send_reminder(reminder, remindtime, message.channel))
+                loop.run_until_complete(task)
 
-        if command == 'roledebug':            
-            await message.channel.send("fine, here's your fucking role")
-            test_role = channel = discord.utils.get(message.guild.roles, name='test')
-            await message.author.add_roles(test_role)
-                                                                      
-                                                                                                            
-        if command == 'remind':
-            rawtime = args.split(' ', 1)[0]
-            h, m, s = rawtime.split(':')
-            sectime = float(h)*3600 + float(m)*60 + float(s)
-            remindtime = time.time() + float(sectime)
-            reminder = args.split(' ', 1)[1]
-            print(rawtime)
-            print(sectime)
-            await message.channel.send("fine, I'll remind you '%s' in %s , you forgetfull shit" % (reminder, rawtime))
-            with open('reminders.txt', 'a+') as reminders:
-                reminders.write(";%s,%s,%s" % (reminder, remindtime, message.channel.id))
-            task = loop.create_task(send_reminder(reminder, remindtime, message.channel))
-            loop.run_until_complete(task)
+            if command == 'test':
+                await message.channel.send('kill me now')
 
-        if command == 'test':
-            await message.channel.send('kill me now')
-
-        if command == 'sad':
-            image = images[random.randint(0,len(images)-1)]
-            sad_message = sad_messages[random.randint(0,len(sad_messages)-1)]
-            file= discord.File('images/'+ image, filename = image) 
-            await message.channel.send(sad_message, file=file)
+            if command == 'sad':
+                image = images[random.randint(0,len(images)-1)]
+                sad_message = sad_messages[random.randint(0,len(sad_messages)-1)]
+                file= discord.File('images/'+ image, filename = image) 
+                await message.channel.send(sad_message, file=file)
+            
+            if command == 'chat':
+                response = chatbot.get_response(args)
+                await message.channel.send(response)
         
-        if command == 'chat':
-            response = chatbot.get_response(args)
-            await message.channel.send(response)
-    
-        if command == 'help':
-            await message.channel.send(''' I'm the one that fucking needs help here
+            if command == 'help':
+                await message.channel.send(''' I'm the one that fucking needs help here
 
 `s#test` just verifies that I'm working properly
 `s#role` crowns you a bona fide sad nigga (only works during offical sad nigga hours (US eastern time zone))
@@ -147,6 +151,19 @@ async def on_message(message):
 `s#chat message` will reply to message with an automated chatbot. it isn't very good yet
 `s#help` does . . . you fucking know what it does
             ''')
+
+        if  message.content.startswith('sudo s#'):
+            command = message.content[7:].split(' ', 1)[0]
+            if len(message.content[7:].split(' ', 1)) >=2:
+                args = message.content[7:].split(' ', 1)[1]
+
+            if command == 'restart':
+                subprocess.call('./bot.py')
+                sys.exit()
+
+            if command == 'test':
+                await message.channel.send('kill me now. no, not working then? *sudo kill me now*. there, now you have to do it.')
+
     chan = message.channel
     hist_itr = chan.history(limit = 5)
     hist = []
