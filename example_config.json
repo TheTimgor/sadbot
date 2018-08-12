@@ -1,0 +1,6 @@
+{
+    "token": "<Bot token: https://discordapp.com/developers/applications/me>",
+    "debugChannel": "<Channel ID (number, w/o quotes)>",
+    "whoUpChannel": "<Channel ID (number, w/o quotes)>",
+    "trainChannel": "<Channel ID (number, w/o quotes)>"
+}
