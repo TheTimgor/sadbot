@@ -18,7 +18,7 @@ with open("config.json", "r") as read_file:
     global config
     config = json.load(read_file)
 
-print(config[token])
+print(config['token'])
 
 images = [f for f in listdir('images') if isfile(join('images', f))]
 
@@ -76,7 +76,7 @@ async def timed_message():
     #TODO: fix timing:
     await asyncio.sleep(1)
     print("sad debug statement")
-    channel = client.get_channel(config[whoUpChannel])
+    channel = client.get_channel(config['whoUpChannel'])
     print(client.is_closed())
     while not client.is_closed():
         if time.strftime("%H %M %S") == '02 00 00':
@@ -226,5 +226,5 @@ async def on_ready():
 print("debug 1")
 client.loop.create_task(timed_message())
 print("debug 2")
-client.run(token)
+client.run(config['token'])
 print("debug 3")
