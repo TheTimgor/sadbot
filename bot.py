@@ -158,6 +158,9 @@ async def on_message(message):
             if command == 'chat':
                 response = chatbot.get_response(args)
                 await message.channel.send(response)
+            
+            if command == 'version':
+                await message.channel.send("sadbot 1.7.1 beta")
         
             if command == 'help':
                 await message.channel.send(''' I'm the one that fucking needs help here
