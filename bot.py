@@ -11,7 +11,6 @@ from os import listdir
 from os.path import isfile, join
 from chatterbot.trainers import ListTrainer
 
-
 startup = True
 
 with open("config.json", "r") as read_file:
@@ -19,6 +18,8 @@ with open("config.json", "r") as read_file:
     config = json.load(read_file)
 
 print(config['token'])
+
+
 
 images = [f for f in listdir('images') if isfile(join('images', f))]
 
@@ -111,7 +112,7 @@ This is akin to what Haruka does:
 @client.event
 async def on_message(message):
     if not message.author.bot: 
-        if message.content.startswith('s!'): #man's not bot
+        if message.content.startswith(config['trigger']): #man's not bot
             command = message.content[2:].split(' ', 1)[0]
             if len(message.content[2:].split(' ', 1)) >=2:
                 args = message.content[2:].split(' ', 1)[1]
@@ -169,12 +170,18 @@ async def on_message(message):
 `s#help` does . . . you fucking know what it does
             ''')
 
-        if  message.content.startswith('sudo s!'):
+        if  message.content.startswith('sudo ' + config['trigger']):
             command = message.content[7:].split(' ', 1)[0]
             if len(message.content[7:].split(' ', 1)) >=2:
                 args = message.content[7:].split(' ', 1)[1]
 
             if command == 'restart':
+                subprocess.call('./bot.py')
+                sys.exit()
+
+            if command == 'update':
+                output = subprocess.run("git pull origin " + config["branch"], stderr=subprocess.PIPE)
+                print(output)
                 subprocess.call('./bot.py')
                 sys.exit()
 
