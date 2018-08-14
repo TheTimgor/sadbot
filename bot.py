@@ -4,21 +4,22 @@ import discord
 import asyncio
 import time
 import random
+import json
 import subprocess
 from chatterbot import ChatBot
 from os import listdir
 from os.path import isfile, join
 from chatterbot.trainers import ListTrainer
 
-
 startup = True
 
-with open('token.txt', 'r') as t:
-    global token 
-    token = t.read().splitlines()[0]
+with open("config.json", "r") as read_file:
+    global config
+    config = json.load(read_file)
+
+print(config['token'])
 
 
-print(token)
 
 images = [f for f in listdir('images') if isfile(join('images', f))]
 
@@ -73,10 +74,10 @@ chatbot.train([
 ])
 
 async def timed_message():
-    #await client.wait_until_ready()
+    #TODO: fix timing:
     await asyncio.sleep(1)
     print("sad debug statement")
-    channel = client.get_channel(443094449233592327)
+    channel = client.get_channel(config['whoUpChannel'])
     print(client.is_closed())
     while not client.is_closed():
         if time.strftime("%H %M %S") == '02 00 00':
@@ -92,14 +93,31 @@ async def send_reminder(reminder, remindtime, channel):
         await asyncio.sleep(1)
     await channel.send(reminder)
 
+"""@MindfulMinun
+# Separate functions from `on_message` handler.
+Defining all the functions in one place and using `if` and `else if`
+statements will inevitably lead to unmaintainable code.
+
+My proposed solution:
+- Store functions as their own self-contained scripts.
+- On init, have sadbot fetch these functions and store them in a list.
+- In the `on_message` listener, iterate through all the functions and
+  determine which should be run.
+
+This is akin to what Haruka does:
+    https://git.io/fN5GU
+    https://benjic.xyz/2018-07-30/haruka-teardown/#haruka
+"""
+
 @client.event
 async def on_message(message):
     if not message.author.bot: 
-        if message.content.startswith('s#'): #man's not bot
+        if message.content.startswith(config['trigger']): #man's not bot
             command = message.content[2:].split(' ', 1)[0]
             if len(message.content[2:].split(' ', 1)) >=2:
                 args = message.content[2:].split(' ', 1)[1]
 
+            # TODO: bot should create role if it doesn't exist
             if command == 'role':
                 if time.strftime("%H") >= "02" and time.strftime("%H") < "05":
                     await message.channel.send("fine, here's your fucking role")
@@ -152,12 +170,18 @@ async def on_message(message):
 `s#help` does . . . you fucking know what it does
             ''')
 
-        if  message.content.startswith('sudo s#'):
+        if  message.content.startswith('sudo ' + config['trigger']):
             command = message.content[7:].split(' ', 1)[0]
             if len(message.content[7:].split(' ', 1)) >=2:
                 args = message.content[7:].split(' ', 1)[1]
 
             if command == 'restart':
+                subprocess.call('./bot.py')
+                sys.exit()
+
+            if command == 'update':
+                output = subprocess.run("git pull origin " + config["branch"], stderr=subprocess.PIPE)
+                print(output)
                 subprocess.call('./bot.py')
                 sys.exit()
 
@@ -183,7 +207,7 @@ async def on_ready():
         print(client.user.id)
         print('------')
         print(images)
-        chan = client.get_channel(443094449233592327)
+        chan = client.get_channel(config['trainChannel'])
         hist_itr = chan.history(limit = 100)
         hist = []
         async for m in hist_itr:
@@ -191,7 +215,7 @@ async def on_ready():
         print(hist)
         chatbot.train(hist)
     
-        await client.get_channel(454457353463529482).send("bot nominal. why must you bring me into this cruel world?")
+        await client.get_channel(config['debugChannel']).send("bot nominal. why must you bring me into this cruel world?")
 
         with open('reminders.txt', 'r') as reminders:
             reminders_list = reminders.read().split(';')
@@ -209,5 +233,5 @@ async def on_ready():
 print("debug 1")
 client.loop.create_task(timed_message())
 print("debug 2")
-client.run(token)
+client.run(config['token'])
 print("debug 3")
