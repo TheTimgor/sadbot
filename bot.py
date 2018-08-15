@@ -185,7 +185,7 @@ async def on_message(message):
                     sys.exit()
 
                 if command == 'update':
-                    output = subprocess.run(['git', 'fetch', 'origin', config["branch"]], stderr=subprocess.PIPE)
+                    output = subprocess.run(['git', 'pull', '--no-commit' 'origin', config["branch"]], stderr=subprocess.PIPE)
                     print(output)
                     subprocess.call('./bot.py')
                     sys.exit()
