@@ -165,13 +165,14 @@ async def on_message(message):
             if command == 'help':
                 await message.channel.send(''' I'm the one that fucking needs help here
 
-`s#test` just verifies that I'm working properly
-`s#role` crowns you a bona fide sad nigga (only works during offical sad nigga hours (US eastern time zone))
-`s#remind H:MM:SS reminder` sends _reminder_ with the specified delay
-`s#sad` posts a random sad image 
-`s#chat message` will reply to message with an automated chatbot. it isn't very good yet
-`s#help` does . . . you fucking know what it does
-            ''')
+`{t}test` just verifies that I'm working properly
+`{t}role` crowns you a bona fide sad nigga (only works during offical sad nigga hours (US eastern time zone))
+`{t}remind H:MM:SS reminder` sends _reminder_ with the specified delay
+`{t}sad` posts a random sad image 
+`{t}chat message` will reply to message with an automated chatbot. it isn't very good yet
+`{t}version` returns the version number
+`{t}help` does . . . you fucking know what it does
+            '''.format(t=trigger)
 
         if  message.content.startswith('sudo ' + config['trigger']):
             if discord.utils.get(message.guild.roles, name='sudoers file') in message.author.roles:
