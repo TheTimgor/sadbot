@@ -81,7 +81,7 @@ async def timed_message():
     print(client.is_closed())
     while not client.is_closed():
         if time.strftime("%H %M %S") == '02 00 00':
-            await channel.send('@here who up https://i.imgur.com/7CWoBT7.jpg')
+            await channel.send('who up https://i.imgur.com/7CWoBT7.jpg')
         await asyncio.sleep(1)
 
     print("it does not work and I am sad")
@@ -111,8 +111,8 @@ This is akin to what Haruka does:
 
 @client.event
 async def on_message(message):
-    if not message.author.bot: 
-        if message.content.startswith(config['trigger']): #man's not bot
+    if not message.author.bot: #man's not bot
+        if message.content.startswith(config['trigger']): 
             command = message.content[2:].split(' ', 1)[0]
             if len(message.content[2:].split(' ', 1)) >=2:
                 args = message.content[2:].split(' ', 1)[1]
@@ -174,22 +174,25 @@ async def on_message(message):
             ''')
 
         if  message.content.startswith('sudo ' + config['trigger']):
-            command = message.content[7:].split(' ', 1)[0]
-            if len(message.content[7:].split(' ', 1)) >=2:
-                args = message.content[7:].split(' ', 1)[1]
+            if discord.utils.get(message.guild.roles, name='sudoers file') in message.author.roles:
+                command = message.content[7:].split(' ', 1)[0]
+                if len(message.content[7:].split(' ', 1)) >=2:
+                    args = message.content[7:].split(' ', 1)[1]
 
-            if command == 'restart':
-                subprocess.call('./bot.py')
-                sys.exit()
+                if command == 'restart':
+                    subprocess.call('./bot.py')
+                    sys.exit()
 
-            if command == 'update':
-                output = subprocess.run(['git', 'fetch', 'origin', config["branch"]], stderr=subprocess.PIPE)
-                print(output)
-                subprocess.call('./bot.py')
-                sys.exit()
+                if command == 'update':
+                    output = subprocess.run(['git', 'fetch', 'origin', config["branch"]], stderr=subprocess.PIPE)
+                    print(output)
+                    subprocess.call('./bot.py')
+                    sys.exit()
 
-            if command == 'test':
-                await message.channel.send('kill me now. no, not working then? *sudo kill me now*. there, now you have to do it.')
+                if command == 'test':
+                    await message.channel.send('kill me now. no, not working then? *sudo kill me now*. there, now you have to do it.')
+            else:
+                await message.channel.send("Username is not in the sudoers file. This incident will be reported")
 
     chan = message.channel
     hist_itr = chan.history(limit = 5)
