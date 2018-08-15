@@ -4,5 +4,6 @@
     "whoUpChannel": "<Channel ID (number, w/o quotes)>",
     "trainChannel": "<Channel ID (number, w/o quotes)>",
     "trigger": "s!",
-    "branch" : "master"
+    "branch" : "master",
+    "version": "sadbot <version number>"
 }

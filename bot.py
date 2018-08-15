@@ -160,7 +160,7 @@ async def on_message(message):
                 await message.channel.send(response)
             
             if command == 'version':
-                await message.channel.send("sadbot 1.7.1 beta")
+                await message.channel.send(config['version'])
         
             if command == 'help':
                 await message.channel.send(''' I'm the one that fucking needs help here
@@ -183,7 +183,7 @@ async def on_message(message):
                 sys.exit()
 
             if command == 'update':
-                output = subprocess.run(['git', 'pull', 'origin', config["branch"]], stderr=subprocess.PIPE)
+                output = subprocess.run(['git', 'fetch', 'origin', config["branch"]], stderr=subprocess.PIPE)
                 print(output)
                 subprocess.call('./bot.py')
                 sys.exit()
