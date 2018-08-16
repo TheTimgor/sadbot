@@ -157,7 +157,7 @@ async def on_message(message):
             
             if command == 'chat':
                 response = str(chatbot.get_response(args))
-                response.replace('@everyone', '@ everyone').replace('@here', '@ here')
+                response = response.replace('@everyone', '@ everyone').replace('@here', '@ here')
                 await message.channel.send(response)
             
             if command == 'version':
