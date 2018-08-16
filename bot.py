@@ -204,10 +204,7 @@ async def on_message(message):
     hist = []
     async for m in hist_itr:
         hist.insert(0,m.content)
-    chatbot.train(hist)
-
-        daemon
-       
+    chatbot.train(hist)       
 
 @client.event
 async def on_ready():
