@@ -36,7 +36,7 @@ chatbot.train([
     "how are you",
     "you know that feeling of dread and angst when the toilet water splashes up and hits your asshole? that but emotionaly.",
     "what's wrong",
-    "some asshole programmed my to be depressed. I fucking wonder who, huh tim?",
+    "some asshole programmed me to be depressed. I fucking wonder who, huh tim?",
 ])
 
 chatbot.train([
@@ -137,7 +137,7 @@ async def on_message(message):
                 h, m, s = rawtime.split(':')
                 sectime = float(h)*3600 + float(m)*60 + float(s)
                 remindtime = time.time() + float(sectime)
-                reminder = args.split(' ', 1)[1]
+                reminder = args.split(' ', 1)[1].replace('@everyone', '@ everyone').replace('@here', '@ here')
                 print(rawtime)
                 print(sectime)
                 await message.channel.send("fine, I'll remind you '%s' in %s , you forgetfull shit" % (reminder, rawtime))
@@ -157,13 +157,14 @@ async def on_message(message):
             
             if command == 'chat':
                 response = chatbot.get_response(args)
+                response.replace('@everyone', '@ everyone').replace('@here', '@ here')
                 await message.channel.send(response)
             
             if command == 'version':
                 await message.channel.send(config['version'])
             
             if command == 'code': 
-                await message.channel.send('code for' + config['version'], file=discord.File('bot.py'))
+                await message.channel.send('code for ' + config['version'], file=discord.File('bot.py'))
         
             if command == 'help':
                 await message.channel.send(''' I'm the one that fucking needs help here
