@@ -156,7 +156,7 @@ async def on_message(message):
                 await message.channel.send(sad_message, file=file)
             
             if command == 'chat':
-                response = chatbot.get_response(args)
+                response = str(chatbot.get_response(args))
                 response.replace('@everyone', '@ everyone').replace('@here', '@ here')
                 await message.channel.send(response)
             
