@@ -163,7 +163,7 @@ async def on_message(message):
                 await message.channel.send(config['version'])
             
             if command == 'code': 
-                await message.channel.send('code for' + config['version'], file='/bot.py')
+                await message.channel.send('code for' + config['version'], file='bot.py')
         
             if command == 'help':
                 await message.channel.send(''' I'm the one that fucking needs help here
