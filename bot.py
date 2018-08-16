@@ -175,9 +175,10 @@ async def on_message(message):
 `{t}chat message` will reply to message with an automated chatbot. it isn't very good yet
 `{t}version` returns the version number
 `{t}help` does . . . you fucking know what it does
-            '''.format(t=trigger)
+            '''.format(t=trigger))
 
-        if  message.content.startswith('sudo ' + config['trigger']):
+
+        if message.content.startswith('sudo ' + config['trigger']):
             if discord.utils.get(message.guild.roles, name='sudoers file') in message.author.roles:
                 command = message.content[7:].split(' ', 1)[0]
                 if len(message.content[7:].split(' ', 1)) >=2:
@@ -188,7 +189,7 @@ async def on_message(message):
                     sys.exit()
 
                 if command == 'update':
-                    output = subprocess.run(['git', 'fetch', 'origin', config["branch"]], stderr=subprocess.PIPE)
+                    output = subprocess.run(['git', 'pull', '--no-commit', 'origin', config["branch"]], stderr=subprocess.PIPE)
                     print(output)
                     subprocess.call('./bot.py')
                     sys.exit()
