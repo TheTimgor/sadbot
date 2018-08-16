@@ -161,6 +161,9 @@ async def on_message(message):
             
             if command == 'version':
                 await message.channel.send(config['version'])
+            
+            if command == 'code': 
+                await message.channel.send('code for' + config['version'], file='/bot.py')
         
             if command == 'help':
                 await message.channel.send(''' I'm the one that fucking needs help here
@@ -202,7 +205,7 @@ async def on_message(message):
         hist.insert(0,m.content)
     chatbot.train(hist)
 
-        
+        daemon
        
 
 @client.event
