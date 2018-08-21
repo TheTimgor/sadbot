@@ -1,4 +1,5 @@
 #! /usr/bin/python3.6
+# -*- coding: utf-8 -*-
 
 import discord
 import asyncio
@@ -45,7 +46,7 @@ chatbot.train([
     "why are you sad",
     "my creator is a sadistic asshole who enjoys making me suffer",
     "don't be sad",
-    "oh yeah, I hadn't though of that, thanks. asshat." 
+    "oh yeah, I hadn't though of that, thanks. asshat."
 ])
 
 chatbot.train([
@@ -85,7 +86,7 @@ async def timed_message():
         await asyncio.sleep(1)
 
     print("it does not work and I am sad")
-        
+
 async def send_reminder(reminder, remindtime, channel):
     while int(time.time()) != int(remindtime):
         #print(remindtime)
@@ -112,7 +113,7 @@ This is akin to what Haruka does:
 @client.event
 async def on_message(message):
     if not message.author.bot: #man's not bot
-        if message.content.startswith(config['trigger']): 
+        if message.content.startswith(config['trigger']):
             command = message.content[2:].split(' ', 1)[0]
             if len(message.content[2:].split(' ', 1)) >=2:
                 args = message.content[2:].split(' ', 1)[1]
@@ -126,12 +127,12 @@ async def on_message(message):
                 else:
                     await message.channel.send("it isn't real sad nigga hours, you fucking poser")
 
-            if command == 'roledebug':            
+            if command == 'roledebug':
                 await message.channel.send("fine, here's your fucking role")
                 test_role = channel = discord.utils.get(message.guild.roles, name='test')
                 await message.author.add_roles(test_role)
-                                                                          
-                                                                                                                
+
+
             if command == 'remind':
                 rawtime = args.split(' ', 1)[0]
                 h, m, s = rawtime.split(':')
@@ -152,27 +153,27 @@ async def on_message(message):
             if command == 'sad':
                 image = images[random.randint(0,len(images)-1)]
                 sad_message = sad_messages[random.randint(0,len(sad_messages)-1)]
-                file= discord.File('images/'+ image, filename = image) 
+                file= discord.File('images/'+ image, filename = image)
                 await message.channel.send(sad_message, file=file)
-            
+
             if command == 'chat':
                 response = str(chatbot.get_response(args))
                 response = response.replace('@everyone', '@ everyone').replace('@here', '@ here')
                 await message.channel.send(response)
-            
+
             if command == 'version':
                 await message.channel.send(config['version'])
-            
-            if command == 'code': 
+
+            if command == 'code':
                 await message.channel.send('code for ' + config['version'], file=discord.File('bot.py'))
-        
+
             if command == 'help':
                 await message.channel.send(''' I'm the one that fucking needs help here
 
 `{t}test` just verifies that I'm working properly
 `{t}role` crowns you a bona fide sad nigga (only works during offical sad nigga hours (US eastern time zone))
 `{t}remind H:MM:SS reminder` sends _reminder_ with the specified delay
-`{t}sad` posts a random sad image 
+`{t}sad` posts a random sad image
 `{t}chat message` will reply to message with an automated chatbot. it isn't very good yet
 `{t}version` returns the version number
 `{t}help` does . . . you fucking know what it does
@@ -198,21 +199,22 @@ async def on_message(message):
                 if command == 'test':
                     await message.channel.send('kill me now. no, not working then? *sudo kill me now*. there, now you have to do it.')
             else:
-                await message.channel.send("Username is not in the sudoers file. This incident will be reported")
+                # IDEA: create a list of users abusing sudo, actually reporting the incident.
+                await message.channel.send("Username is not in the sudoers file. This incident will be reported.")
 
     chan = message.channel
     hist_itr = chan.history(limit = 5)
     hist = []
     async for m in hist_itr:
         hist.insert(0,m.content)
-    chatbot.train(hist)       
+    chatbot.train(hist)
 
 @client.event
 async def on_ready():
     global startup
     if(startup):
         print('Logged in as')
-        print(client.user.name) 
+        print(client.user.name)
         print(client.user.id)
         print('------')
         print(images)
@@ -223,7 +225,7 @@ async def on_ready():
             hist.insert(0,m.content)
         print(hist)
         chatbot.train(hist)
-    
+
         await client.get_channel(config['debugChannel']).send("bot nominal. why must you bring me into this cruel world?")
 
         with open('reminders.txt', 'r') as reminders:

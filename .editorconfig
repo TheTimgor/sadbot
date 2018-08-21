@@ -1,0 +1,15 @@
+# editorconfig
+root = true
+
+[*] # All files
+# Intent lines with 4 spaces
+indent_style = space
+indent_size = 4
+charset = utf-8
+trim_trailing_whitespace = true # c'mon tim
+end_of_line = lf
+insert_final_newline = true
+
+
+[*.md] # Markdown
+trim_trailing_whitespace = false
